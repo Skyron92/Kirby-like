@@ -48,16 +48,20 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Float: 0.028
-    - _NoiseValue: 10
-    - _Power: 0.3
+    - _Float: 0.065
+    - _Floatibng_lerp: 0
+    - _FloatingSpeed: 0.5
+    - _Floating_Distance: 0.5
+    - _Floating_Frequency: 0.5
+    - _NoiseValue: 1
+    - _Power: 0.34
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _RotationValue: 0
-    - _TwirlValue: 20
+    - _RotationValue: 0.81
+    - _TwirlValue: 10
     m_Colors:
-    - _Color: {r: 0.8122524, g: 0.8122524, b: 0.8122524, a: 1}
+    - _Color: {r: 0.8117647, g: 0.8117647, b: 0.8117647, a: 1}
     - _NoiseSpeed: {r: 2, g: 1, b: 0, a: 0}
-    - _TwirlCenter: {r: -2, g: -2, b: 0, a: 0}
+    - _TwirlCenter: {r: -2.75, g: 0.54, b: 0, a: 0}
     - _TwirlSpeed: {r: 5, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
