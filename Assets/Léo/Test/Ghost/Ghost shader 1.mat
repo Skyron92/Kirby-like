@@ -55,10 +55,10 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _floatingFrequency: 10
-    - _floatingValue: 3
+    - _floatingValue: 5
     - _interiorMultiplier: 1.69
     m_Colors:
-    - _FResnelColor: {r: 3.7321315, g: 3.7321315, b: 3.7321315, a: 0}
+    - _FResnelColor: {r: 83.46362, g: 83.46362, b: 83.46362, a: 0}
     - _FloatinfLerp: {r: 0.03, g: 0.03, b: 0.03, a: 0}
     - _Interior_colo: {r: 1, g: 1, b: 1, a: 1}
     - _interior_position: {r: 0, g: 0, b: 0, a: 0}
