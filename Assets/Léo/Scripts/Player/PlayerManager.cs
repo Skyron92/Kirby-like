@@ -4,9 +4,10 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     private CharacterController _characterController;
-    private bool _isGrounded;
+    [SerializeField] private bool _isGrounded;
     [Range(0, 100)] public float Speed;
     [Range(0, 100)] public float JumpSpeed;
+    private float gravity = 9.81f; 
     [SerializeField] private GameObject NormalForm;
     [SerializeField] private GameObject FireForm;
     [SerializeField] private GameObject WaterForm;
@@ -45,6 +46,7 @@ public class PlayerManager : MonoBehaviour
             move += new Vector3(0,JumpSpeed * Time.deltaTime,0);
         }
         _characterController.Move(move);
+        _characterController.Move(Vector3.down * gravity);
     }
 
     void ChangeForm(){
