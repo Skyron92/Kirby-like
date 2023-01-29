@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 
-public class Normal : Player
+public class Normal : Form
 {
     [SerializeField] private GameObject tongue;
-    
+
     public override void Attack() {
         if(Input.GetKeyDown("E") && (!IsAttacking))
         Instantiate(tongue);
@@ -24,5 +24,9 @@ public class Normal : Player
     public override void ThrowPower()
     {
         throw new System.NotImplementedException();
+    }
+
+    public Normal(PlayerManager playerManager) : base(playerManager)
+    {
     }
 }

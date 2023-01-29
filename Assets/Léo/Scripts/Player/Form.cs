@@ -1,16 +1,24 @@
 ﻿using System;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public abstract class Player : MonoBehaviour {
+public abstract class Form : MonoBehaviour {
     private int maxHP;
     private int currentHP;
-    public int damage;
-    public int JumpCount;
+    public GameObject Prefab;
+    [SerializeField] private int Damage;
+    [SerializeField] private int JumpCount;
     public bool IsAttacking;
-    private Animator _animator;
+    public Animator _animator;
+    protected PlayerManager Player;
+
+    protected Form(PlayerManager playerManager) {
+        Player = playerManager;
+    }
 
     private void Awake() {
         _animator = GetComponent<Animator>();
+        Prefab = gameObject;
     }
 
     public abstract void Attack();

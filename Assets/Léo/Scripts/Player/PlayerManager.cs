@@ -1,28 +1,34 @@
 using System;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerManager : MonoBehaviour
 {
     private CharacterController _characterController;
-    [SerializeField] private bool _isGrounded;
+    private bool _isGrounded => _characterController.isGrounded;
     [Range(0, 100)] public float Speed;
     [Range(0, 100)] public float JumpSpeed;
-    private float gravity = 9.81f; 
-    [SerializeField] private GameObject NormalForm;
-    [SerializeField] private GameObject FireForm;
-    [SerializeField] private GameObject WaterForm;
-    [SerializeField] private GameObject RockForm;
-    [SerializeField] private GameObject WindForm;
-    [SerializeField] private GameObject ThunderForm;
+    private Vector3 move = new Vector3();
+    private float gravity = -9.81f;
+    [SerializeField] private float gravityMultiplier = 1f;
+    private Animator _animator;
+    private GameObject _prefab;
+    [SerializeField] private Form CurrentForm;
     public static int FormIndex;
-   
-    void Start() {
+    
+
+    void Awake() {
         _characterController = GetComponent<CharacterController>();
-        _isGrounded = _characterController.isGrounded;
+        CurrentForm = new Normal(this);
+        _prefab = CurrentForm.Prefab;
+        _animator = GetComponent<Animator>();
     }
     
     void Update() {
         MovePlayer();
+        JumpPlayer();
+        ApplyGravity();
     }
 
     private void OnTriggerEnter(Collider other) {
@@ -32,28 +38,34 @@ public class PlayerManager : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        
-    }
-
     void MovePlayer() {
-        Vector3 move = new Vector3();
-        if (Input.GetButton("Horizontal")) {
-            move += new Vector3(Input.GetAxisRaw("Horizontal") * Speed * Time.deltaTime,0,0);
-        }
-        if (Input.GetButtonDown("Jump") && _isGrounded) {
-            move += new Vector3(0,JumpSpeed * Time.deltaTime,0);
-        }
+        move.x += Input.GetAxisRaw("Horizontal") * Speed * Time.deltaTime;
         _characterController.Move(move);
-        _characterController.Move(Vector3.down * gravity);
+        if(!_isGrounded) _characterController.Move(Vector3.down * gravity * Time.deltaTime);
     }
 
-    void ChangeForm(){
-        switch (FormIndex) {
-            case 0 :
-                Instantiate(NormalForm, transform);
-                break;
-        }
+    void Jump(InputAction.CallbackContext context) {
+        if(!context.started) return;
+        if (!_isGrounded) return;
+        move.y += JumpSpeed * Time.deltaTime;
     }
+    
+    void JumpPlayer() {
+        if(!Input.GetButtonDown("Jump")) return;
+        if (!_isGrounded) return;
+        move.y += JumpSpeed;
+    }
+    
+    void ApplyGravity() {
+        if (_isGrounded) return;
+        move.y += gravity * gravityMultiplier * Time.deltaTime;
+    }
+
+    private void SwitchForm(Form newForm) {
+        CurrentForm = newForm;
+        _prefab = CurrentForm.Prefab;
+        _animator = CurrentForm._animator;
+        Instantiate(_prefab, transform);
+    }
+    
 }
