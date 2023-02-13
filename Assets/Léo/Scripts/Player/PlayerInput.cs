@@ -19,9 +19,6 @@ namespace Player{
         
         //Jump variables
         private float _jumpCount;
-        private bool _isOnAWall;
-        private bool _isClimbing;
-        private float _grabDuration = 2.0f;
 
         //Customizable variables
         [Header("Player settings")] [Tooltip("Vitesse de déplacement du joueur")] [Range(0,10)] [SerializeField]
@@ -37,6 +34,9 @@ namespace Player{
         [Tooltip("Forme actuelle du joueur")] [SerializeField]
         private Forme forme;
         
+        //Variable to other classes
+        public static Transform trans;
+        
         public enum Forme {
             Normale,
             Flamboyante,
@@ -48,26 +48,24 @@ namespace Player{
 
         private void Awake() {
             _characterController = GetComponent<CharacterController>();
-            _isOnAWall = false;
+            Bugs.playerTransform = transform;
         }
 
         private void Update() {
+            trans = transform;
             MovePlayer();
             RotatePlayer();
             Gravity();
             if (_isGrounded) _jumpCount = 0;
-            DetectWall();
         }
 
         public void Move(InputAction.CallbackContext context) {
-            if (_isOnAWall) return;
             _inputMove = context.ReadValue<Vector2>();
             _direction = new Vector3(_inputMove.x, 0, 0);
         }
 
         private void MovePlayer() {
-            if(!_isOnAWall) _characterController.Move(_direction * speed * Time.deltaTime);
-            else _characterController.Move(_direction * Walkspeed * Time.deltaTime);
+            _characterController.Move(_direction * speed * Time.deltaTime);
         }
 
         private void RotatePlayer() {
@@ -81,7 +79,6 @@ namespace Player{
         }
 
         private void Gravity() {
-            if(_isOnAWall) return;
             if (_isGrounded && _velocity < 0.0f) _velocity = -1.0f;
             else _velocity += _gravity * height * Time.deltaTime;
             _direction.y = _velocity;
@@ -100,8 +97,7 @@ namespace Player{
             _jumpCount++;
         }
 
-        public void DetectWall() {
-            if(forme == Forme.ArmureDeRoche) return;
+        /*public void DetectWall() {
             if(_isGrounded) return;
             RaycastHit hit;
             Vector3 side = new Vector3(_direction.x, 0, 0);
@@ -119,24 +115,26 @@ namespace Player{
         }
 
         public void GrabWall(InputAction.CallbackContext context) {
-            if (!context.performed) return;
+            if(!_isOnAWall) return;
+            if (!context.performed) {
+                _grabDuration = 2.0f;
+                _grabDuration -= Time.deltaTime;
+                if (_grabDuration <= 0) _isOnAWall = false;
+            }
             if (_isGrounded) {
                 _isOnAWall = false;
-                return;
             }
-            _grabDuration = 2.0f;
-            _grabDuration -= Time.deltaTime;
-            if (_grabDuration <= 0) _isOnAWall = false;
+            
         }
 
         public void Climb(InputAction.CallbackContext context) {
             if(!_isOnAWall) return;
             _inputMove = context.ReadValue<Vector2>();
-            int fallMultiplier = 1;
-            if (_inputMove.y < 0) fallMultiplier = 3;
-            else fallMultiplier = 1;
+            float fallMultiplier = 1;
+            if (_inputMove.y < 0) fallMultiplier = 1;
+            else fallMultiplier = 0.5f;
             _direction = new Vector3(0, _inputMove.y * fallMultiplier, 0);
-        }
+        }*/
 
         public void Attack(InputAction.CallbackContext context) {
             if(forme == Forme.ArmureDeRoche) if(!context.started && _isGrounded) return;
